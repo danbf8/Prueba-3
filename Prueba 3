@@ -1,0 +1,224 @@
+import numpy as np
+# Declaracion de variables globales
+op = 0 # variable que opera el menu
+patentes = []  #Lista de todas las patentes almacenadas
+formato = ["Tipo","Patente","Marca","Modelo","Color","Combustible","Año","Precio","Multas: Monto, fecha","Fecha de registro","Nombre dueño","Rut dueño"] #Formato de almacenamiento de los datos de vehiculos
+autos = [[]] #Lista con los datos de los vehiculos
+cant = 0 #Cantidad de vehiculos almacenados en la memoria
+############################################### funciones de validacion de ingreso de datos################################
+
+def valpat(pataux):  #validacion patente
+    
+    if len(pataux) == 6 and pataux[4:].isdigit() == True and pataux[:4].isdigit() == False:
+       
+        return 0
+    elif len(pataux) == 6 and pataux[:2].isdigit() == False and pataux[2:].isdigit() == True:
+        return 0
+    else :
+        print ("Escriba una patente valida")
+        print("Formato patente: AA9999 o AAAA99")
+        return 1
+
+
+def valtipo(pataux): #validacion tipo de auto
+    if pataux == 'auto' or pataux == 'camioneta' or pataux == 'furgon':
+        return 0
+    else:
+        print("Escriba un tipo de vehiculo valido: auto, camioneta o furgon.")
+        return 1
+
+def valmarc(pataux): #validacion marca
+    
+    if len(pataux)>=2 and len(pataux) <= 15 and pataux.isdigit() == False :
+        return 0
+    else: 
+        print("Ingrese datos entre 2 y 15 caracteres.")
+        return 1
+
+
+def valmode(pataux): #validacion para los datos que solo incluyen caracteres.
+     if len(pataux)>=2 and len(pataux) <= 15 :
+        return 0
+
+def valan(pataux): #validacion año
+    
+    if len(pataux) == 4 and pataux.isdigit() == True:
+        return 0
+    else:
+        print("Ingrese los datos de forma correcta.\n Ejemplo: 2012 \n")
+        return 1
+
+def valpre(pataux): #validacion precio
+    if pataux.isdigit() == True:
+        return 0
+    else:
+        print("Por favor ingrese un valor numerico.")
+        return 1
+
+#auxiliar de validacion de rut
+def rutaux():
+    return False
+
+
+def valrut(pataux): #validacion rut
+    #i=2
+    #f=-1
+    #des=[]
+    #des=pataux[:8]
+    #print(des,len(pataux))
+    #tot=0
+    if len(pataux) == 9:
+        #print(des[f],i,tot)
+        #aux1=int(des[f])
+        #aux2=int(aux1*i)
+        #tot=aux2+tot
+        #print(tot)
+        #des.pop(-1)
+        #i=i+1      
+        #dv=11-(tot%11)
+        #dv == pataux[8:]:
+
+        return 0
+    else:
+        print("Ingrese un rut valido.")
+        return 1
+
+  
+        
+
+######################################### Fin de las funciones de validacion
+
+##################### Funcion grabar
+
+def grabar (op,cant,autos,patentes):
+    try:
+        print("Se grabarán los datos del vehículo. Ingrese en el siguiente orden por favor")
+        print(formato)
+        print("Cuando se le solicite ingrese rut sin puntos ni guion. Ejemplo: 20333678k")
+        i = 0
+        
+        for x in formato:
+            loop = 1
+            while loop != 0:
+                pataux=input(f"Ingrese {formato[i]}:\n")
+                if formato [i] == "Tipo":
+                    print("Ingrese: Auto, camioneta o furgon.")
+                    pataux=pataux.lower()
+                    loop=valtipo(pataux)
+                    autos[cant].append(pataux)
+                elif formato[i] == "Patente":
+                    loop=valpat(pataux)
+                    pataux=pataux.lower()
+                    patentes.append(pataux)
+                    autos[cant].append(pataux)
+                elif formato[i]=="Año":
+                    loop=valan(pataux)
+                    autos[cant].append(pataux)
+                elif formato[i]=="Modelo":
+                    pataux=pataux.lower()
+                    loop=valmode(pataux)
+                    autos[cant].append(pataux)
+                elif formato[i]=="Precio":
+                    loop=valpre(pataux)
+                    autos[cant].append(pataux)
+                elif formato [i]=="Rut dueño":
+                    
+                    loop=valrut(pataux)
+                    autos[cant].append(pataux)
+            
+                else: 
+                    pataux=pataux.lower()
+                    loop=valmarc(pataux)
+                    autos[cant].append(pataux)
+            i = i+1         
+                
+            
+        autos.append([])
+        cant=cant+1
+        return (op,cant,autos,patentes)
+    except:
+        print("Error")
+    
+
+################################ Funcion de busqueda de patentes en el arreglo de patentes
+
+def bupat(bpat,patentes):
+    aux=patentes.index(bpat)
+    return aux
+
+
+################################### Funcion buscar
+def buscar(op,cant,autos,patentes):
+    if cant == 0:
+        print(f"La cantidad de autos registrados es {cant}, volverá al inicio")
+        return 1
+    elif op == 3:
+        bpat=(input("Ingrese patente del vehiculo a buscar:\n"))
+        aux=bupat(bpat,patentes)
+        paim2 = []
+        paim2=autos[aux]
+        return paim2
+
+    else:
+        bpat=(input("Ingrese patente del vehiculo a buscar:\n"))
+        aux=bupat(bpat,patentes)
+        print(f"Los datos solicitados :\n{autos[aux]}")    
+
+        return (op,cant,autos,patentes)
+
+################################### Fucion imprimir
+
+def imprimir (op,cant,autos,patentes):
+    paim = [[]
+    paim=buscar(op,cant,autos,patentes)
+
+
+    print("Inscripcion: BRGG. 95-9\n")
+    print("Datos del vehiculo:\n-----------------------------------------------")
+    print(f"{formato[0]}  :  {paim[0]} \t\t {formato[6]} :  {paim[6]} ")
+    print(f"{formato[2]}  :  {paim[2]}")
+    print(f"{formato[3]}  :  {paim[3]}")
+    print("Numero de motor:   F16D31879121")
+    print(f"{formato[4]}  :  {paim[4]}")
+
+          
+          
+
+    
+    return (op,cant,autos,patentes)
+
+################################ Funcion menu
+
+def menu (op,cant,autos,patentes):
+    try:
+        print("Le damos la bienvenida al sistema de auto seguro. Ingrese la opcion que desee utilizar:")
+        print ("1. Grabar.\n2. Buscar.\n3. Imprimir certificado de anotaciones vigentes.\n4. Salir.")
+        op=int(input(" "))
+        
+        if op == 1:
+        
+            (op,cant,autos,patentes,)=grabar(op,cant,autos,patentes)
+            return (op,cant,autos,patentes)
+    
+        elif op == 2:
+            (op,cant,autos,patentes,)=buscar(op,cant,autos,patentes)
+            return (op,cant,autos,patentes)
+
+        elif op == 3:
+            (op,cant,autos,patentes,)=imprimir(op,cant,autos,patentes)
+            return (op,cant,autos,patentes)
+    
+        elif op ==4:
+            print("\n\n\n\n\n\n\t\t-----------------------------\n\t\tEl programa se cerrará, gracias por preferir Auto seguro.\n\t\t-----------------------------\n\n\n\n\n\n\t\t\tDante Beltrán. v1.0\n")
+            return (op,cant,autos,patentes)
+        else: 
+            print("Ingrese una opcion valida.")
+    except:
+        print("Error")
+
+######################################### Inicio del programa
+while op != (4): #ciclo que mantiene el menu
+    try:
+        (op,cant,autos,patentes,)=menu(op,cant,autos,patentes)  #entrada a la funcion menu
+    except:
+        print("Error")
